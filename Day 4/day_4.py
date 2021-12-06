@@ -1,3 +1,4 @@
+import copy
 FILENAME = "input.txt"
 
 def str_2D_arr(string):
@@ -13,7 +14,30 @@ class Bingo_Board:
     def __init__(self, arr_2D):
         self.ROW_LENGTH = 5
         self.COLUMN_LENGTH = 5
-        self.board = arr_2D
+        self.board = arr_2D.copy()
+        self.original = copy.deepcopy(arr_2D)
+
+    def __str__(self):
+        result = ""
+        for row in self.board:
+            str_row = [str(num) for num in row]
+            for element_counter in range(len(str_row)):
+                if len(str_row[element_counter]) < 2:
+                    str_row[element_counter] = " " + str_row[element_counter]
+            result += ' '.join(str_row)
+            result += "\n"
+        return result
+
+    def get_original(self):
+        result = ""
+        for row in self.original:
+            str_row = [str(num) for num in row]
+            for element_counter in range(len(str_row)):
+                if len(str_row[element_counter]) < 2:
+                    str_row[element_counter] = " " + str_row[element_counter]
+            result += ' '.join(str_row)
+            result += "\n"
+        return result
 
     def sum_unmarked(self):
         result = 0
@@ -42,11 +66,12 @@ class Bingo_Board:
             return True
         return False
 
+    # Returns if the updated board results in a bingo
     def update_board(self, number):
         for row_counter in range(len(self.board)):
             for col_counter in range(len(self.board)):
                 if self.board[row_counter][col_counter] == number:
-                    self.board[row_counter][col_counter] =  -1
+                    self.board[row_counter][col_counter] = -1
                     if self.check_bingo(row_counter, col_counter):
                         return True
         return False
@@ -61,11 +86,19 @@ def main():
     for arr_2D in data:
         boards.append(Bingo_Board(str_2D_arr(arr_2D)))
     
+
+    winning_boards = []
     for number in directions:
-        for bingo_object in boards:
+        board_index = 0
+        while board_index < len(boards):
+            bingo_object = boards[board_index]
             if bingo_object.update_board(number):
-                print(bingo_object.sum_unmarked() * number)
-                return 0
-    return 0
+                winning_boards.append([bingo_object, number])
+                boards.pop(board_index)
+                board_index -= 1
+            board_index += 1
+
+    print(winning_boards[-1][0].sum_unmarked())
+    print(winning_boards[-1][0].sum_unmarked() * winning_boards[-1][1])
 
 main()
