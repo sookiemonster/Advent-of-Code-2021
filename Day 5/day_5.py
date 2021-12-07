@@ -32,6 +32,28 @@ def get_points(x1, y1, x2, y2):
         else: 
             for x in range(x2, x1 + 1):
                 result.append([x, y1])
+    else:
+        counter = 0
+        # Left to right
+        if (x1 < x2):
+            for x in range(x1, x2 + 1):
+                if (y1 < y2):
+                    # going up
+                    result.append([x, y1 + counter])
+                else:
+                    # going down
+                    result.append([x, y1 - counter])
+                counter += 1
+        # Right to left
+        else:
+            for x in range(x1, x2 - 1, -1):
+                if (y1 < y2):
+                    # going up
+                    result.append([x, y1 + counter])
+                else:
+                    # going down
+                    result.append([x, y1 - counter])
+                counter += 1
     return result
 
 def main():
